@@ -1,0 +1,33 @@
+#!/bin/bash
+export IFS=$'\n'
+argv=("$@")
+CMDNAME=`basename $0`
+if [ $# -ne 1 ]; then
+        echo "Usage : ${CMDNAME} [dirname]"
+        exit 1
+fi
+
+DATE=`date +"%Y%m%d%H%M"`
+echo $DATE
+DIR="use_"$DATE
+
+cd `readlink -f ${argv[0]}`
+mkdir -p ${DIR} || exit 1
+
+for m3u8 in `ls -1 *.m3u8`
+do
+	echo ${m3u8}
+
+        echo "#EXTM3U" > ${DIR}/${m3u8}
+
+        for mp3 in `cat ${m3u8} | grep -v "#EXTM3U" | tr -d '\r'`
+        do
+            filename=`basename "${mp3}"`
+            cp -v "${mp3}" ${DIR}/ || continue
+            echo "${filename}" >> ${DIR}/${m3u8} || continue
+        done
+
+	echo "${DIR}/${m3u8}"
+	cat ${DIR}/${m3u8}
+
+done
