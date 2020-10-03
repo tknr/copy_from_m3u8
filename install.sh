@@ -1,4 +1,5 @@
 #!/bin/bash -x
+cd `dirname $0`
 
 mkdir -p ~/bin
 ln -s `pwd`/copy_from_m3u8 ~/bin/
